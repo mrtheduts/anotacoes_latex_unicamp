@@ -1,0 +1,285 @@
+\documentclass[a4paper,oneside,article,table]{article}
+
+%encoding
+%--------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%--------------------------------------
+
+%Portuguese-specific commands
+%--------------------------------------
+\usepackage[brazil]{babel}
+%--------------------------------------
+
+%Hyphenation rules
+%--------------------------------------
+\usepackage{hyphenat}
+\hyphenation{mate-mática recu-perar}
+%--------------------------------------
+
+%Page formatting
+%--------------------------------------
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{multicol}
+\usepackage{indentfirst}
+\usepackage{enumitem}
+%--------------------------------------
+
+%Math
+%--------------------------------------
+\usepackage{mathtools}
+\usepackage{amssymb}
+%--------------------------------------
+
+%Plotting Graphs
+%--------------------------------------
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{graphs}
+%--------------------------------------
+
+%Misc
+%--------------------------------------
+\usepackage[bottom]{footmisc}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{xparse}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{textcomp}
+\usepackage{mdwlist}
+%--------------------------------------
+
+
+\title{Anotações MS211}
+\author{Eduardo M. F. de Souza}
+\date{\today}
+
+\definecolor{light gray}{gray}{0.8}
+\renewcommand{\arraystretch}{1.3}
+
+\frenchspacing
+%\raggedbottom{}
+%\raggedright{}
+
+\begin{document}
+
+\pagenumbering{gobble}
+\maketitle
+
+\pagenumbering{arabic}
+
+\tableofcontents
+\newpage
+
+\section{Erros em processos Numéricos}
+
+
+        Em diversas áreas científicas, os métodos numéricos podem ser usados para resolução de problemas. A resolução de problemas envolve várias fases:
+
+        \begin{center}
+            \begin{tikzpicture}[node distance=1.2cm]
+
+                \node (ProbReal) [rectangle, rounded corners, text centered, draw=black] {Problema Real};
+                \node (ModelMat) [rectangle, rounded corners, text centered, draw=black, below of=ProbReal] {Modelo Matemático};
+                \node (MetSol) [rectangle, rounded corners, text centered, draw=black, below of=ModelMat] {Método de Solução};
+                \node (AnalResul) [rectangle, rounded corners, text centered, draw=black, below of=MetSol] {Análise dos Resultados};
+
+                \path [->] (ProbReal) edge node [right]{Simplificações} (ModelMat);
+                \path [->] (ModelMat) edge node {} (MetSol);
+                \path [->] (MetSol) edge node {} (AnalResul);
+                \path [->] (AnalResul) edge[bend right=90] node {} (ModelMat);
+                
+            \end{tikzpicture}
+        \end{center}
+
+        Uma vez resolvido um problema, pode ocorrer que a solução obtida não seja a esperada. Isto porque durante o processo de resolução pode ter ocorrido:
+
+        \begin{enumerate}
+        \item Erros de modelagem matemáticas;
+            \item Erro de parâmetros;
+            \item Erros associados aos sistema de numeração utilizado;
+            \item Erros resultantes das operações efetuadas;
+            \item Entre outros;
+        \end{enumerate}
+
+        \subsection{Representação dos Números}
+        A representação de um número depende da base escolhida (ou disponível na máquina utilizada) e o número de dígitos usados na sua representação.
+
+        Exemplo: calcular a área de uma circunferência:
+            \[r = 1000 m\]
+            \[A \cong 31400 m^2\]
+            \[A \cong 31416 m^2\]
+            \[A \cong 31415,92 m^2\]
+
+        Quanto maior o número de dígitos utilizados, maior será a precisão obtida! Além disso, um número pode ter representação finita em uma base e não finita em outra. Por exemplo:
+        \[{(0,2)}_{10} = {(0,00110011\ldots)}_2\]
+
+        \subsection{Conversão de Números nos Sistemas decimal e binário}
+        \subsubsection{Mudança da base decimal para a base binária}
+        Sistema posicional:
+        \[{(6)}_{10} = 6\times10^0\]
+        \[{(347)}_{10} = 3\times10^2 + 4\times10^1 + 7\times10^0\]
+        \[{(10111)}_2 = 1\times2^4 + 0\times2^3 + 1\times2^1 + 1\times2^0 = {(23)}_{10}\]
+
+        De forma geral, um número na base $\beta$ é:
+        \[{(a_j a{j-1} a_{j-2} \cdots a_2 a_1 a_0)}_{\beta}\] com \[0 \leq a_k \leq \beta - 1, k = 1 \ldots j\]
+
+            \[= a_j\beta^j + a_{j-1}\beta^{j-1} + \cdots + a_2\beta^2 + a_1\beta^1 + a_0\beta^0\]
+
+            \textbf{Mudança base decimal para base binária:}
+            \begin{enumerate}
+
+                \item Parte inteira: Divisões sucessivas\\
+                    ${(6)}_{10} = {(110)}_2$ $6\div2\div2\div2$
+                \item Parte fracionária: Multiplicações sucessivas\\
+                    \[{(0,1875)}_{10} = {(0.0011)}_2\]
+                    % Pegando só a parte decimal
+                    \[((0,1875)\times2)\times2\times2\times2 = 1,\boxed{0} \textrm{\textbf{ (Pare!)}}\] 
+                    \\
+                    \[{(0,1)}_{10} = {(0,000110011\overline{0011}\ldots)}_2 \textrm{ não tem representação finita na base binária}\] %colocar um risco em cima da parte que repete
+                    \[0,1\times2 = 0,2; 0,2\times2 = 0,4; 0,4\times2 = 0,8; 0,8\times2=1,6; 0,6\times2=1,2; 0,2\times2 = 0,4\] %começa a repetir
+                    \[{(0,11)}_{10} = {(?)}_2 \textrm{ também não tem representação finita na base binária}\]
+                    O fato de um número não ter uma representação finita no sistema binário (usado nos computadores) pode acarretar na ocorrência de erros.
+
+            \end{enumerate}
+
+            \textbf{Mudança binária para base decimal:}
+            \begin{enumerate}
+                    \item Parte inteira: expoentes positivos da direita para a esquerda
+                        \[{(10011)}_2 = 1\times2^3 + 0\times2^2 + 1\times2^1 + 1\times2^0 = 8 + 0 + 2 + 1 = {(11)}_{10}\]
+                        \item Parte fracionária: expoentes negativos da esquerda para direita
+                        \[{(0,101)}_2 = 1\times2^{-1} + 0\times2^{-2} + 1\times2^{-3} = 0,5 + 0,125 = {(0,625)}_{10}\]
+            \end{enumerate}
+
+            \textbf{Exercício:} escreva ${(1101,011)}_2$ na base decimal.
+
+            \subsection{Aritmética de Ponto Flutuante}
+            Um número real pode ser representado no sistema de ponto flutuante como:
+            \[x = m\times\beta^e\]
+            Em que:
+            \[m = \pm 0.d_1d_2d_2\ldots~d_n, n \in \natural \textrm{ (chamada mantissa)}\]
+
+            \begin{description}
+                    \item $n$ é o número de dígitos na mantissa
+                        \item $\beta$ é a base do sistema
+                            \item $e$ é o expoente, $e \in Z, l\leq~e\leq~u$, sendo que $l$ e $u$ são inteiros fixos
+                    \item $0\leq~d_j\leq~(\beta - 1), j = 1, \ldots~, n$
+                    \item $d_1 \neq 0$
+            \end{description}
+        A reunião de todos os números reais em ponto flutuante mais o zero constitui o sistema de ponto flutuante, denotado por:
+
+        \[F(\beta, n, l, u)\]
+
+        Nesse sistema, o menor número, em valor absoluto, é $(0,1)\times\beta^e$ e o maior valor, em valor absoluto, é $0.(\beta-1)(\beta-1)\ldots(\beta-1)\times\beta^u$ %o beta - 1 é n vezes (esses são os dígitos)
+
+        Considere o conjunto dos números reais $\mathbb{R}$ e o seguinte conjunto:
+        \[G = \{x \in \pgfmathreal / {\beta}^l \leq |x| {\beta}^u\}\]
+
+        Dado um número real $x$, três situações podem ocorrer (Exemplos com o caso $F(10, 5, -5, 5)$:
+
+        \begin{enumerate}
+                \item $x \in G$: nesse caso, pode-se encontrar valor aproximado de $x,~\overline{x} \in F$.\\
+                    Exemplo: $x = 235.89 = 0.23589 \times 10^3$
+                \item $|x| \le 0.1\beta^l$: $x$ está na condição de \textit{underflow}.\\
+                    Exemplo: $x = 0.325 \times 10^{-7}$
+                \item $|x| \ge 0.(\beta-1)(\beta-1_\ldots(\beta-1) \times \beta^u$: $x$ está na condição de \textit{overflow}.\\
+                    Exemplo: $x = 0.875 \times 10^{\boxed{9}}$ ($9 \ge u = 5$)
+        \end{enumerate}
+
+        Exemplo: $F(\beta = 10, n = 4, l = -5, u = 5)$
+        \begin{itemize}
+                \item menor (abs): $0.1 \times 10^{-5}
+                \item maior (abs): $0.9999 \times 10^{5}
+        \end{itemize}
+        \[G = \{x \in \pgfmathreal / 10^{-6} \leq x \leq 99990\}\]
+
+        Truncamento: $x = 423.5\boxed{7} = 0.4235 \times 10^3$
+        Arredondamento: $x = 423.5\boxed{7} = 0.4236 \times 10^3$
+        Underflow: $x = 0.5 \times 10^{-9} \rightarrow -9 \le l = -5$
+        Overflow: $x = 0.3 \times 10^8 \rightarrow 8 \ge u = 5$
+
+        \subsection{Erros}
+
+        \begin{description}
+
+            \item Erro absoluto: ${EA}_x = |x - \overline{x}|$
+            \item Erro relativo: ${ER}_x = \frac{{EA}_x}{|\overline{x}|} = \frac{|x - \overline{x}|}{|\overline{x}|}$
+
+        \end{description}
+
+        \subsubsection{Erros de Arredondamento e Truncamento}
+        Considere um sistema de ponto flutuante com $n$ dígitos e base $10$. Podemos escrever $x$ como:
+        \[x = f_x \times 10^e + g_x \times 10^{e-n}\]
+        onde
+        \[0.1 \leq f_x \le 1\]
+        \[0 \leq g_x \le 1\]
+
+        Exemplo: $x=234,57$ e $n=4$
+        \[x = 234,57 = 2 \times 10^2 + 3 \times 10^1 + 4 \times 10^0 + 5 \times^{-1} + 7 \times 10^{-2}\]
+        \[= (2 \times 10^{-1} + 3 \times 10^{-2} + 4 \times 10^{-3} + 5 \times 10^{-4}) \times 10^3 + (7 \times 10^-1) \times 10^{-1}\]
+        \[= 0.2345 \times 10^{3} + 0.7 \times 10^{-1}\]
+        \[f_x = 0.2345 \textrm{ e } g_x =0.7 \times 10^{-1}\]
+        \[e = 3 \textrm{ e } e-n = -1\]
+
+        Para representar $x$ nesse sistema, podemos usar dois critérios:
+        \begin{itemize}
+            \item Truncamento: $\overline{x} = f_x \times 10^e$ e $g_x \times 10^{e-n}$ é desprezado;\\
+                \[|EA_x| \le 10^{e-n}\]
+                \[|ER_x| \le 10^{-n+1}\]
+                Ex: $\overline{x} = 0.2345 \times 10^3$
+            \item Arredondamento: $\overline{x} = \begin{cases}
+                    f_x  \times 10^e & \text{se $|g_x| \le \frac{1}{2}$}\\
+                    f_x  \times 10^e  + 10^{e - n} & \text{se $|g_x| \geq \frac{1}{2}$}\\
+                \end{cases}$\\
+                \[|EA_x| \le \frac{1}{2} \times 10^{e-n}\]
+                \[|ER_x| \le \frac{1}{2} \times 10^{-n+1}\]
+                Ex: $\overline{x} = 0.23456 \times 10^3$
+        \end{itemize}
+
+        \[|EA_x| = |x - \overline{x} = f_x \times 10^e + g_x \times 10^{e-n} - f_x \times 10^e\]
+        \[= |g_x \times 10^{e-n}\]
+        \[|g_x| \times 10^{e-n} \le 10^{e-n}\]
+
+
+        $|ER_x|$ fica de tarefa!
+
+
+        \subsubsection{Teorema de Taylor}
+        Suponha $f \in C^n[a,b]$, $f^{n-1}$ existe em $[a,b]$ e $x_0 \in [a,b]$
+        $\forall x \in [a,b] \exists \xi(x)$ entree $x$ e $x_0$ com
+        $f(x) = P_n(x) + R_n(x)$, onde:
+        \[P_n(x) = f(x_0) + f^{(1)}(x_0)(x - x_0) + f^{(2)}(x_0)\frac{(x-x_0)^2}{2!} + \ldots + f^{(n)}(x_0)\frac{(x-x_0)^n}{n!}\]
+        \[= \sum_{k=0}^{n} f^{(k)}(x_0) \times \frac{{(x - x_0)}^k}{k!}\]
+        \[R_n(x) = f^{(n+1) (\xi(x)) \times \frac{{(x - x_0)}^{n+1}}{(n + 1)!}\]
+
+
+            $P_n(x)$ é chamado de polinômio de taylor de ordem $n$ para $f$ em torno de $x_0$ e $R_n(x)$ é o resto (erro de truncamento) associado à $P_n(x)$.
+
+            Obs: A série infinita obtida fazendo-se o limite de $P_n(x)$ quando $n \rightarrow \inf$ é chamada de série de Taylor de $f$ em torno de $x_0$. No caso $x_0 = 0$, chamamos de polinômio de McLaurin (e série de McLaurin).
+
+            Por exemplo, para calcular o valor de $e^{0.5}$:\\
+            $f(x) = e^x$, $f^{(1)}(x) = e^x$, $f^{(2)}(x) = e^x$, \ldots~\\
+
+            Série de Taylor ($x_0 = 0$)
+            \[= f(0) + f^{(1)}(0)(x - 0) + f^{(2)}(0)\frac{(x - 0)^2}{2!} + f^{(3)}(x)\frac{(x - 0)^3}{3!} + \cdots + f^{(n)}(0)\frac{(x-0)^n}{n!}\]
+            \[= e^0 + e^0(x) + \frac{e^0(x)^2}{2!} + \frac{e^0(x)^3}{3!} + \cdots + \frac{e^0x^n}{n!} + \cdots\]
+            \[= 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots + \frac{x^n}{n!} + \cdots\]
+
+            Para o cálculo de $e^{0.5}$, precisamos \underline{truncar} a série, usando apenas um número finito de termos da série.
+
+            Por exemplo, usando os \underline{seis primeiros termos} ($n = 5$), como aproximação:
+            \[e^x \approxeq 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \frac{x^5}{5!}\]
+            \[e^{0.5} \approxeq 1 + 0.5 + \frac{0.5^2}{2} + \frac{0.5^3}{6} + \frac{0.5^4}{24} + \frac{0.5^5}{120}\]
+            \[= 1.5 + 0.125 + 0.0208333 + 0.002604166 + 0.00026041666\]
+            \[= 1.648697\]
+
+            O erro de truncamento é dado por:
+            \[R_n(x) = f^{(n=1)}(\xi_x) \times \frac{(x - x_0)^{n_1}}{(n+1)!} = f^{(6)}(\alpha) \times \frac{(x - 0)^6}{6!}\]
+            Neste caso: $\frac{\alpha^6}{6!}$, com $0 \leq \alpha \leq 0.5$
+            Estimativa para o erro, faço $\alpha = 0.5$
+            \[R_n(x) \leq \gamma = \frac{0.5^6}{720} = 0.217 \times 10^{-6}\]
+
+\end{document}
