@@ -159,8 +159,11 @@
                     \begin{align*}
                         &{(0,1875)}_{10} = {(?)}_2\\
                         0,1875 \times 2 = \boxed{0},375 \rightarrow \quad &{(0,1875)}_{10} = {(0.\boxed{0}\ldots~?)}_2\\
+                        0,375 - \lfloor 0,375 \rfloor = 0,375 \quad &\\
                         0,375 \times 2 = \boxed{0},75 \rightarrow \quad &{(0,1875)}_{10} = {(0.0\boxed{0}\ldots~?)}_2\\
-                        0,5 \times 2 = \boxed{1},5 \rightarrow \quad &{(0,1875)}_{10} = {(0.00\boxed{1}\ldots~?)}_2\\
+                        0,75 - \lfloor 0,75 \rfloor = 0,75 \quad &\\
+                        0,75 \times 2 = \boxed{1},5 \rightarrow \quad &{(0,1875)}_{10} = {(0.00\boxed{1}\ldots~?)}_2\\
+                        1,5 - \lfloor 1,5 \rfloor = 0,5 \quad &\\
                         0,5 \times 2 = \boxed{1},\underline{0} \rightarrow \quad &{(0,1875)}_{10} = {(0.001\boxed{1}\ldots~?)}_2\\
                         \textrm{\textbf{(Pare!)}} \quad &{(0,1875)}_{10} = {(0.0011)}_2
                     \end{align*}
@@ -229,7 +232,7 @@
         A reunião de todos os números reais em ponto flutuante mais o zero constitui o \textbf{sistema de ponto flutuante}, denotado por $F(\beta, n, l, u)$. Nesse sistema, o menor número, em valor absoluto, é $(0,1)\times\beta^e$ e o maior valor, em valor absoluto, é $0,(\beta-1)(\beta-1)\ldots(\beta-1)\times\beta^u$. %o beta - 1 é n vezes (esses são os dígitos
 
         Considere o conjunto dos números reais $\mathbb{R}$ e o seguinte conjunto:
-        \[G = \{x \in \mathbb{R} : {\beta}^l \leq |x| {\beta}^u\}\]
+        \[G = \{x \in \mathbb{R} : {\beta}^l \leq |x| < {\beta}^u\}\]
 
         Dado um número real $x$, três situações podem ocorrer (Exemplos com o caso $F(10, 5, -5, 5)$):
 
@@ -247,7 +250,7 @@
                 \item menor (abs): $0.1 \times 10^{-5}$
                 \item maior (abs): $0.9999 \times 10^{5}$
         \end{itemize}
-        \[G = \{x \in \mathbb{R} / 10^{-6} \leq x \leq 99990\}\]
+        \[G = \{x \in \mathbb{R} | 10^{-6} \leq x \leq 99990\}\]
 
         Outros exemplos:
         \begin{itemize}
@@ -269,7 +272,7 @@
 
             Considere um sistema de ponto flutuante com $n$ dígitos e base $10$. Podemos escrever $x$ como:
             \begin{gather*}
-                x = f_x \times 10^e + g_x \times 10^{e-n}:~0.1 \leq f_x < 1,~ 0 \leq g_x < 1
+                x = f_x \times 10^e + g_x \times 10^{e-n}~|~0.1 \leq f_x < 1,~ 0 \leq g_x < 1
             \end{gather*}
 
             Exemplo com $x=234,57$ e $n=4$:
@@ -289,25 +292,45 @@
 
             Para representar $x$ nesse sistema, podemos usar dois critérios:
             \begin{itemize}
-                \item Truncamento: $\overline{x} = f_x \times 10^e$ e $g_x \times 10^{e-n}$ é desprezado;\\
-                    \[|EA_x| < 10^{e-n}\]
-                    \[|ER_x| < 10^{-n+1}\]
+                \item \textbf{Truncamento:} $\overline{x} = f_x \times 10^e$ e $g_x \times 10^{e-n}$ é desprezado;
+                    \begin{gather*}
+                        |EA_x| < 10^{e-n}\\
+                        |ER_x| < 10^{-n+1}
+                    \end{gather*}
+
                     Ex: $\overline{x} = 0.2345 \times 10^3$
-                \item Arredondamento: $\overline{x} = \begin{cases}
-                        f_x  \times 10^e & \text{se $|g_x| < \frac{1}{2}$}\\
-                        f_x  \times 10^e  + 10^{e - n} & \text{se $|g_x| \geq \frac{1}{2}$}\\
-                    \end{cases}$\\
-                    \[|EA_x| < \frac{1}{2} \times 10^{e-n}\]
-                    \[|ER_x| < \frac{1}{2} \times 10^{-n+1}\]
+
+                \item \textbf{Arredondamento:} $\overline{x} = \begin{cases}
+                        f_x  \times 10^e, & \text{se $|g_x| < \frac{1}{2}$}\\
+                        f_x  \times 10^e  + 10^{e - n}, & \text{se $|g_x| \geq \frac{1}{2}$}\\
+                    \end{cases}$
+                    \begin{gather*}
+                        |EA_x| < \frac{1}{2} \times 10^{e-n}\\
+                        |ER_x| < \frac{1}{2} \times 10^{-n+1}
+                    \end{gather*}
+
                     Ex: $\overline{x} = 0.23456 \times 10^3$
             \end{itemize}
+            
+            Dessa forma, temos $|EA_x|$ e $|ER_x|$ como:
+            \begin{align*}
+                |EA_x| &= |x - \overline{x}| \\
+                &= |f_x \times 10^e + g_x \times 10^{e-n} - f_x \times 10^e|\\
+                &= |g_x \times 10^{e-n}|\\
+                10^{e-n} &> |g_x \times 10^{e-n}|\\
+            \end{align*}
 
-            \[|EA_x| = |x - \overline{x} = f_x \times 10^e + g_x \times 10^{e-n} - f_x \times 10^e\]
-            \[= |g_x \times 10^{e-n}\]
-            \[|g_x| \times 10^{e-n} < 10^{e-n}\]
+            \begin{align*}
+                {ER}_x &= \frac{{EA}_x}{|\overline{x}|}\\
+                &= \frac{|x - \overline{x}|}{|\overline{x}|}\\
+                &= \frac{|f_x \times 10^e + g_x \times 10^{e-n} - f_x \times 10^e|}{|f_x \times 10^e|}\\
+                &= \frac{g_x}{f_x} \times \frac{10^{e-n}}{10^e}\\
+                &= \frac{g_x}{f_x} \times 10^{-n}\\
+                \\
+                \text{Como $g_x$ é dez vezes menor que}& \text{ $f_x$, temos que:}\\
+                10^{-n + 1} &> \frac{g_x}{f_x} \times 10^{-n}
+            \end{align*}
 
-
-            $|ER_x|$ fica de tarefa!
 
         \subsubsection{Teorema de Taylor}
 
