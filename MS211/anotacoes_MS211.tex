@@ -39,6 +39,9 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 \usetikzlibrary{graphs}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
 %--------------------------------------
 
 %Misc
@@ -52,6 +55,7 @@
 \usepackage{caption}
 \usepackage{textcomp}
 \usepackage{mdwlist}
+\usepackage{subcaption}
 %--------------------------------------
 
 
@@ -334,146 +338,288 @@
 
         \subsubsection{Teorema de Taylor}
 
-            Suponha $f \in C^n[a,b]$, $f^{n-1}$ existe em $[a,b]$ e $x_0 \in [a,b]$
-            $\forall x \in [a,b] \exists \xi(x)$ entree $x$ e $x_0$ com
+            Suponha $f \in C^n[a,b]$. $f^{n-1}$ existe em $[a,b]$ e $x_0 \in [a,b]$ e $\forall x \in [a,b], \exists~\xi(x)$ entre $x$ e $x_0$ com
             $f(x) = P_n(x) + R_n(x)$, onde:
-            \[P_n(x) = f(x_0) + f^{(1)}(x_0)(x - x_0) + f^{(2)}(x_0)\frac{(x-x_0)^2}{2!} + \ldots + f^{(n)}(x_0)\frac{(x-x_0)^n}{n!}\]
-            \[= \sum_{k=0}^{n} f^{(k)}(x_0) \times \frac{{(x - x_0)}^k}{k!}\]
-            \[R_n(x) = f^{(n+1)}(\xi(x)) \times \frac{{(x - x_0)}^{n+1}}{(n + 1)!}\]
 
+            \begin{gather*}
+                P_n(x) = f(x_0) + f^{(1)}(x_0)(x - x_0) + f^{(2)}(x_0)\frac{{(x-x_0)}^2}{2!} + \cdots + f^{(n)}(x_0)\frac{{(x-x_0)}^n}{n!}\\
+                = \sum_{k=0}^{n} f^{(k)}(x_0) \times \frac{{(x - x_0)}^k}{k!}\\
+                R_n(x) = f^{(n+1)}(\xi(x)) \times \frac{{(x - x_0)}^{n+1}}{(n + 1)!}\\
+            \end{gather*}
 
             $P_n(x)$ é chamado de polinômio de taylor de ordem $n$ para $f$ em torno de $x_0$ e $R_n(x)$ é o resto (erro de truncamento) associado à $P_n(x)$.
 
-            Obs: A série infinita obtida fazendo-se o limite de $P_n(x)$ quando $n \rightarrow \inf$ é chamada de série de Taylor de $f$ em torno de $x_0$. No caso $x_0 = 0$, chamamos de polinômio de McLaurin (e série de McLaurin).
+            \paragraph{Obs:} A série infinita obtida fazendo-se o limite $\lim_{n \to \infty} P_n(x)$ é chamada de série de Taylor de $f$ em torno de $x_0$. No caso $x_0 = 0$, chamamos de polinômio de McLaurin (e série de McLaurin). Por exemplo, para calcular o valor de $e^{0.5}$:
 
-            Por exemplo, para calcular o valor de $e^{0.5}$:\\
-            $f(x) = e^x$, $f^{(1)}(x) = e^x$, $f^{(2)}(x) = e^x$, \ldots~\\
+            \begin{gather*}
+                f(x) = e^x,~f^{(1)}(x) = e^x,~f^{(2)}(x) = e^x,~\ldots
+            \end{gather*}
 
-            Série de Taylor ($x_0 = 0$)
-            \[= f(0) + f^{(1)}(0)(x - 0) + f^{(2)}(0)\frac{(x - 0)^2}{2!} + f^{(3)}(x)\frac{(x - 0)^3}{3!} + \cdots + f^{(n)}(0)\frac{(x-0)^n}{n!}\]
-            \[= e^0 + e^0(x) + \frac{e^0(x)^2}{2!} + \frac{e^0(x)^3}{3!} + \cdots + \frac{e^0x^n}{n!} + \cdots\]
-            \[= 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots + \frac{x^n}{n!} + \cdots\]
+            Série de Taylor ($x_0 = 0$):
 
-            Para o cálculo de $e^{0.5}$, precisamos \underline{truncar} a série, usando apenas um número finito de termos da série.
+            \begin{gather*}
+                = f(0) + f^{(1)}(0)(x - 0) + f^{(2)}(0)\frac{{(x - 0)}^2}{2!} + f^{(3)}(x)\frac{{(x - 0)}^3}{3!} + \cdots + f^{(n)}(0)\frac{{(x-0)}^n}{n!}\\
+                = e^0 + e^0(x) + \frac{e^0{(x)}^2}{2!} + \frac{e^0{(x)}^3}{3!} + \cdots + \frac{e^0x^n}{n!} + \cdots\\
+                = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots + \frac{x^n}{n!} + \cdots
+            \end{gather*}
 
-            Por exemplo, usando os \underline{seis primeiros termos} ($n = 5$), como aproximação:
-            \[e^x \approxeq 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \frac{x^5}{5!}\]
-            \[e^{0.5} \approxeq 1 + 0.5 + \frac{0.5^2}{2} + \frac{0.5^3}{6} + \frac{0.5^4}{24} + \frac{0.5^5}{120}\]
-            \[= 1.5 + 0.125 + 0.0208333 + 0.002604166 + 0.00026041666\]
-            \[= 1.648697\]
+            Para o cálculo de $e^{0.5}$, precisamos \underline{truncar} a série, usando apenas um número finito de termos da série. Por exemplo, usando os \underline{seis primeiros termos} ($n = 5$), como aproximação:
+
+            \begin{align*}
+                e^x &\approxeq 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \frac{x^5}{5!}\\
+                e^{0.5} &\approxeq 1 + 0.5 + \frac{0.5^2}{2} + \frac{0.5^3}{6} + \frac{0.5^4}{24} + \frac{0.5^5}{120}\\
+                &= 1.5 + 0.125 + 0.0208333 + 0.002604166 + 0.00026041666\\
+                &= 1.648697
+            \end{align*}
 
             O erro de truncamento é dado por:
-            \[R_n(x) = f^{(n=1)}(\xi_x) \times \frac{(x - x_0)^{n_1}}{(n+1)!} = f^{(6)}(\alpha) \times \frac{(x - 0)^6}{6!}\]
-            Neste caso: $\frac{\alpha^6}{6!}$, com $0 \leq \alpha \leq 0.5$
-            Estimativa para o erro, faço $\alpha = 0.5$
-            \[R_n(x) \leq \gamma = \frac{0.5^6}{720} = 0.217 \times 10^{-6}\]
+            \begin{align*}
+            R_n(x) &= f^{(n+1)}(\xi_x) \times \frac{{(x - x_0)}^{n_1}}{(n+1)!}\\
+            &= f^{(6)}(\alpha) \times \frac{{(x - 0)}^6}{6!}\\
+			\text{Neste caso:}&\\
+			&\frac{\alpha^6}{6!},\text{ com }0 \leq \alpha \leq 0.5
+            \end{align*}
+
+            Estimativa para o erro, faço $\alpha = 0.5$:
+			\begin{align*}
+				R_n(x) \leq \gamma &= \frac{0.5^6}{720}\\
+				&= 0.217 \times 10^{-6}
+			\end{align*}
+
+            \newpage
 
     \subsection{Zeros reais de funções reais}
         \paragraph{Definição:} um número real $\xi$ é um zero da função $f(x)$ ou uma raíz da equação $f(x)=0$ se $f(\xi)=0$.
 
-        \begin{tikzpicture}
-            \begin{axis}[
-                axis lines = left,
-                xlabel = $x$,
-                ylabel = {$f(x)$},
-            ]
-            %Below the red parabola is defined
-            \addlegendentry{$x^2 - 2x - 1$}
-            %Here the blue parabloa is defined
-            \addplot [
-                domain=-10:10, 
-                samples=100, 
-                color=blue,
-                ]
-                {x^2 + 2*x + 1};
+        % Não sei porque a professora colocou essa figura aqui
+		%\begin{figure}[H]
+			%\centering
+			%\begin{tikzpicture}
+				%\begin{axis}[
+					%axis lines = center,
+					%xlabel = $x$,
+					%ylabel = {$f(x)$},
+					%legend style={
+						%cells={anchor=east},
+						%legend pos=north west,
+					%},
+				%]
+					%\addlegendentry{$x^2 - 2x - 1$}
+					%\addplot [
+						%domain=-4:2, 
+						%samples=100, 
+						%color=blue,
+						%]
+						%{x^2 + 2*x + 1};
+				%\end{axis}
+			%\end{tikzpicture}
+		%\end{figure}
 
-            \end{axis}
-        \end{tikzpicture}
-
-        Para calcularmos raízes reais, os métodos (numéricos) geralmente são de duas fases:
+        Para calcularmos raízes reais, os métodos numéricos geralmente são de duas fases:
 
         \begin{enumerate}
-            \item Determinar uma aproximação inicial: localizar ou isolar as raízes (ou seja, determinar umintervalo que contenha a raiz);
-            \item Refinamento: melhorar essa aproximação usando métodos iterativos (obter aproximações dentro de uma precisão $E$ fixada);
+            \item \textbf{Determinar uma aproximação inicial:} localizar ou isolar as raízes (ou seja, determinar umintervalo que contenha a raiz);
+            \item \textbf{Refinamento:} melhorar essa aproximação usando métodos iterativos (obter aproximações dentro de uma precisão $E$ fixada);
         \end{enumerate}
 
         \subsubsection{Fase 1: Localizar raízes de $f(x)$}
         \paragraph{Teorema:} Seja $f(x)$ contínua em $[a,b]$. Se $f(a) \times f(b) < 0$, então pelo menos temos um ponto $\xi$ tal que $f(\xi) = 0$
 
-        % grafico com curva decrescente que possui um \xi entre a e b
+		\begin{figure}[H]
+			\centering
+			\begin{tikzpicture}[>=latex', x=3cm, y=2cm]
+                \draw[->, thick](0,-1)--(0,1)node[anchor=south]{$f(x)$};
+                \draw[->, thick](-0.025,0)--(3,0)node[anchor=west]{$x$};
+
+                \draw[-,thick,name path=line](0,0.9)--(2.9,-0.9);
+
+                \coordinate(a) at (0.5,0);
+                \coordinate(xi) at (1.5,0);
+                \coordinate(b) at (2.5,0);
+
+                \path[name path=linea](a)--+(0,1);
+                \path[name intersections={of=line and linea}](intersection-1) coordinate(intera);
+                \coordinate (yposa) at (intera -| {(0,0)});
+                \draw[dashed] (a) |- (yposa);
+                \node[anchor=east] at (yposa){$f(a)$};
+                \node[anchor=north] at (a){$a$};
+
+                \node[anchor=south] at (xi){$\xi$};
+                \node[anchor=east] at (0,0){$0$};
+
+                \path[name path=lineb](b)--+(0,-1);
+                \path[name intersections={of=line and lineb}](intersection-1) coordinate(interb);
+                \coordinate (yposb) at (interb -| {(0,0)});
+                \draw[dashed] (b) |- (yposb);
+                \node[anchor=east] at (yposb){$f(b)$};
+                \node[anchor=south] at (b){$b$};
+
+			\end{tikzpicture}
+		\end{figure}
 
         \subsubsection*{Método gráfico}
-        Pode ser utilizado para obter uma aproximação inicial para a raiz. Ela consiste em:
+        Pode ser utilizado para obter uma aproximação inicial para a raiz. Ela consiste em \underline{uma} das seguintes alternativas:
 
         \begin{enumerate}
-            \item Construir o gráfico de $y=f(x)$ e obter sua intersecção com o eixo $\vec{Ox}$, \textbf{\underline{ou}}
-            \item Escrever $f(x)$ na forma $g(x) = h(x)$ e obter a intersecção dos gráficos $g(x) - h(x) = 0 = f(x)$
+            \item Ou construir o gráfico de $y=f(x)$ e obter sua intersecção com o eixo $\vec{Ox}$;
+            \item Ou escrever $f(x)$ na forma $g(x) = h(x)$ e obter a intersecção dos gráficos $g(x) - h(x) = 0 = f(x)$;
         \end{enumerate}
 
-        \paragraph{Exemplo:}
-        \begin{enumerate}[label=\alph*]
-            \item \begin{multicols}{2}
-                $f(x) = x^2 - x - 2 = 0$
+        \paragraph{Exemplos:}
+        \begin{enumerate}[label= \textbf{(\alph*)}]
+            \item $f(x) : x^2 - x - 2 = 0$
+                \begin{figure}[H]
 
-                \begin{tikzpicture}
-                    \begin{axis}[
-                        axis lines = center,
-                        xlabel = $x$,
-                        ylabel = {$f(x)$},
-                    ]
-                    %Below the red parabola is defined
-                    %Here the blue parabloa is defined
-                    \addplot [
-                        domain=-2:3, 
-                        samples=100, 
-                        color=blue,
-                        ]
-                        {x^2 - x - 2};
-                        \addlegendentry{$f(x)$}
-                    \end{axis}
-                \end{tikzpicture}
+                    \begin{subfigure}{0.5\textwidth}
+                        \centering
+                        \begin{tikzpicture}
+                            \begin{axis}[
+                                axis lines = center,
+                                xlabel = $x$,
+                                ylabel = {$f(x)$},
+                                ]
+                                \addplot[
+                                domain=-2:3, 
+                                samples=100, 
+                                color=blue,
+                                ]
+                                {x^2-x-2};
+                                \addlegendentry{$f(x)$}
+                            \end{axis}
+                        \end{tikzpicture}
+                        \caption*{(1)}
+                    \end{subfigure}
+                    \begin{subfigure}{0.5\textwidth}
+                        \centering
+                        \begin{tikzpicture}
+                            \begin{axis}[
+                                axis lines = center,
+                                xlabel = $x$,
+                                ylabel = {$f(x)$},
+                                ]
+                                \addplot [
+                                    domain=-2:3, 
+                                    samples=100, 
+                                    color=blue,
+                                    ]
+                                    {x^2};
+                                \addlegendentry{$g(x) = x^2$}
+                                \addplot [
+                                    domain=-2:3, 
+                                    samples=100, 
+                                    color=red,
+                                    ]
+                                    {x + 2};
+                                \addlegendentry{$h(x) = x + 2$}
+                                \addplot[dashed] coordinates {(2,0)(2,4)};
+                                \addplot[dashed] coordinates {(-1,0)(-1,0.8)};
+                            \end{axis}
+                        \end{tikzpicture}
+                        \caption*{(2)}
+                    \end{subfigure}
+                \end{figure}
 
-                \vfill
+            \item $f(x) : x^2 - e^x = 0$
+                \begin{figure}[H]
 
-                \begin{gather*}
-                    g(x) = h(x)\\
-                    x^2 = x + 2
-                \end{gather*}
+                    \begin{subfigure}{0.5\textwidth}
+                        \centering
+                        \begin{tikzpicture}
+                            \begin{axis}[
+                                axis lines = center,
+                                xlabel = $x$,
+                                ylabel = {$f(x)$},
+                                ]
+                                \addplot[
+                                domain=-2:2, 
+                                samples=100, 
+                                color=blue,
+                                ]
+                                {x^2-e^x};
+                                \addlegendentry{$f(x)$}
+                            \end{axis}
+                        \end{tikzpicture}
+                        \caption*{(1)}
+                    \end{subfigure}
+                    \begin{subfigure}{0.5\textwidth}
+                        \centering
+                        \begin{tikzpicture}
+                            \begin{axis}[
+                                axis lines = center,
+                                xlabel = $x$,
+                                ylabel = {$f(x)$},
+                                ]
+                                \addplot [
+                                    domain=-2:2, 
+                                    samples=100, 
+                                    color=blue,
+                                    ]
+                                    {x^2};
+                                \addlegendentry{$g(x) = x^2$}
+                                \addplot [
+                                    domain=-2:2, 
+                                    samples=100, 
+                                    color=red,
+                                    ]
+                                    {e^x};
+                                \addlegendentry{$h(x) = e^x$}
+                                \addplot[dashed] coordinates {(-0.7,0)(-0.7,0.5)};
+                            \end{axis}
+                        \end{tikzpicture}
+                        \caption*{(2)}
+                    \end{subfigure}
+                \end{figure}
 
-                \begin{tikzpicture}
-                    \begin{axis}[
-                        axis lines = center,
-                        xlabel = $x$,
-                        ylabel = {$f(x)$},
-                    ]
-                    %Below the red parabola is defined
-                    %Here the blue parabloa is defined
-                    \addplot [
-                        domain=-2:3, 
-                        samples=100, 
-                        color=blue,
-                        ]
-                        {x^2};
-                        \addlegendentry{$g(x)$}
-                    \addplot [
-                        domain=-2:3, 
-                        samples=100, 
-                        color=red,
-                        ]
-                        {x + 2};
-                        \addlegendentry{$h(x)$}
-                    \end{axis}
-                \end{tikzpicture}
+            \item $f(x) : \log{x} + x = 0$
+                \begin{figure}[H]
 
-        \end{multicols}
-        \item $f(x) = x^2 - e^x = 0$
-
-                \begin{gather*}
-                    g(x) = h(x)\\
-                    x^2 = x + 2
-                \end{gather*}
-
-            \item $f(x) = \log{x} + x = 0$ (Tarefa!)
+                    \begin{subfigure}{0.5\textwidth}
+                        \centering
+                        \begin{tikzpicture}
+                            \begin{axis}[
+                                axis lines = center,
+                                xlabel = $x$,
+                                ylabel = {$f(x)$},
+                                ]
+                                \addplot[
+                                domain=-2:2, 
+                                samples=100, 
+                                color=blue,
+                                ]
+                                {log2(x) + x};
+                                \addlegendentry{$f(x)$}
+                            \end{axis}
+                        \end{tikzpicture}
+                        \caption*{(1)}
+                    \end{subfigure}
+                    \begin{subfigure}{0.5\textwidth}
+                        \centering
+                        \begin{tikzpicture}
+                            \begin{axis}[
+                                axis lines = center,
+                                xlabel = $x$,
+                                ylabel = {$f(x)$},
+                                ]
+                                \addplot [
+                                    domain=-2:2, 
+                                    samples=100, 
+                                    color=blue,
+                                    ]
+                                    {log2(x)};
+                                \addlegendentry{$g(x) = log(x)$}
+                                \addplot [
+                                    domain=-2:2, 
+                                    samples=100, 
+                                    color=red,
+                                    ]
+                                    {-x};
+                                \addlegendentry{$h(x) = -x$}
+                                \addplot[dashed] coordinates {(0.64,0)(0.64,-0.62)};
+                            \end{axis}
+                        \end{tikzpicture}
+                        \caption*{(2)}
+                    \end{subfigure}
+                \end{figure}
 
         \end{enumerate}
 
