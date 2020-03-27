@@ -637,12 +637,134 @@
         \end{gather*}
 
         \subsubsection*{Método da Bisseção}
-        Seja $f$ uma função contínua em $[a,b]$ e suponha $f(a) \times f(b) < 0$ (ou seja, existe raiz real).
-        Para simplificar, vamos supor que existe uma única raíz real em $[a,b]$
-
-        O método da bisseção consistem em determinar uma sequência de intervalos $[a_i,b_i],~i = 1,~2,~\ldots$ de tal forma que $[a_i,b_i]$ sempre contenha a raíz.
+        Seja $f$ uma função contínua em $[a,b]$ e suponha $f(a) \times f(b) < 0$ (ou seja, existe raiz real). Para simplificar, vamos supor que existe uma única raíz real em $[a,b]$. O método da bisseção consistem em determinar uma sequência de intervalos $[a_i,b_i],~i = 1,~2,~\ldots$ de tal forma que $[a_i,b_i]$ sempre contenha a raíz.
 
         % Grafico que tem uma função que passa do negativo para o positivo no intervalo [a,b], sendo que x_1 = (a1+b1)/2. Iterativamente, vai diminuindo a e b pelo novo valor de x
+		\begin{figure}[H]
+			\centering
+            \caption*{1ª iteração}
+			\begin{tikzpicture}[>=latex', x=3cm, y=2cm]
+
+                \draw[->](0,-1)--(0,1)node[anchor=south]{$f(x)$};
+                \draw[->, name path=xaxis](-0.025,0)--(3,0)node[anchor=west]{$x$};
+                \node[anchor=east] at (xaxis){$0$};
+
+                \draw[-, name path=line](0,0.9)--(2.9,-0.9);
+
+                \path[name intersections={of=line and xaxis}](intersection-1) coordinate(xi);
+                \node[anchor=south] at (xi){$\xi$};
+                \draw[-](xi)-- ++(0,0.03);
+                \draw[-](xi)-- ++(0,-0.03);
+
+                \coordinate(a1) at (0.75,0);
+                \coordinate(b1) at (2.7,0);
+
+                \draw[-] (a1)--(b1);
+
+                \path[name path=linea1](a1)--+(0,1);
+                \path[name intersections={of=line and linea1}](intersection-1) coordinate(intera1);
+                \coordinate (yposa1) at (intera1 -| {(0,0)});
+                \draw[dashed] (a1) |- (yposa1);
+                \node[anchor=east] at (yposa1){$f(a_1)$};
+                \node[anchor=north] at (a1){$a_1$};
+
+                \path[name path=lineb1](b1)--+(0,-1);
+                \path[name intersections={of=line and lineb1}](intersection-1) coordinate(interb1);
+                \coordinate (yposb1) at (interb1 -| {(0,0)});
+                \draw[dashed] (b1) |- (yposb1);
+                \node[anchor=east] at (yposb1){$f(b_1)$};
+                \node[anchor=south] at (b1){$b_1$};
+
+                \coordinate(x1) at (1.725,0);
+                \node[anchor=south west] at ([xshift=-0.3cm] x1){$x_1 = b_2$};
+                \draw[-](x1)-- ++(0,0.03);
+                \draw[-](x1)-- ++(0,-0.03);
+
+			\end{tikzpicture}
+		\end{figure}
+
+		\begin{figure}[H]
+			\centering
+            \caption*{2ª iteração}
+			\begin{tikzpicture}[>=latex', x=3cm, y=2cm]
+
+                \draw[->](0,-1)--(0,1)node[anchor=south]{$f(x)$};
+                \draw[->, name path=xaxis](-0.025,0)--(3,0)node[anchor=west]{$x$};
+                \node[anchor=east] at (xaxis){$0$};
+
+                \draw[-, name path=line](0,0.9)--(2.9,-0.9);
+
+                \path[name intersections={of=line and xaxis}](intersection-1) coordinate(xi);
+                \node[anchor=south] at (xi){$\xi$};
+                \draw[-](xi)-- ++(0,0.03);
+                \draw[-](xi)-- ++(0,-0.03);
+
+                \coordinate(a2) at (0.75,0);
+                \coordinate(b2) at (1.725,0);
+
+                \path[name path=linea2](a2)--+(0,1);
+                \path[name intersections={of=line and linea2}](intersection-1) coordinate(intera2);
+                \coordinate (yposa2) at (intera2 -| {(0,0)});
+                \draw[dashed] (a2) |- (yposa2);
+                \node[anchor=east] at (yposa2){$f(a_2)$};
+                \node[anchor=north] at (a2){$a_2$};
+
+                \path[name path=lineb2](b2)--+(0,-1);
+                \path[name intersections={of=line and lineb2}](intersection-1) coordinate(interb2);
+                \coordinate (yposb2) at (interb2 -| {(0,0)});
+                \draw[dashed] (b2) |- (yposb2);
+                \node[anchor=east] at (yposb2){$f(b_2)$};
+                \node[anchor=south] at (b2){$b_2$};
+
+                \coordinate(x2) at (1.2375,0);
+                \node[anchor= north east] at ([xshift=0.35cm] x2){$a_3 = x_2$};
+                \draw[-](x2)-- ++(0,0.03);
+                \draw[-](x2)-- ++(0,-0.03);
+
+			\end{tikzpicture}
+		\end{figure}
+
+		\begin{figure}[H]
+			\centering
+            \caption*{3ª iteração}
+			\begin{tikzpicture}[>=latex', x=3cm, y=2cm]
+
+                \draw[->](0,-1)--(0,1)node[anchor=south]{$f(x)$};
+                \draw[->, name path=xaxis](-0.025,0)--(3,0)node[anchor=west]{$x$};
+                \node[anchor=east] at (xaxis){$0$};
+
+                \draw[-, name path=line](0,0.9)--(2.9,-0.9);
+
+                \path[name intersections={of=line and xaxis}](intersection-1) coordinate(xi);
+                \node[anchor=south] at (xi){$\xi$};
+                \draw[-](xi)-- ++(0,0.03);
+                \draw[-](xi)-- ++(0,-0.03);
+
+                \coordinate(a3) at (1.2375,0);
+                \coordinate(b3) at (1.725,0);
+
+                \path[name path=linea3](a3)--+(0,1);
+                \path[name intersections={of=line and linea3}](intersection-1) coordinate(intera3);
+                \coordinate (yposa3) at (intera3 -| {(0,0)});
+                \draw[dashed] (a3) |- (yposa3);
+                \node[anchor=south east] at (yposa3){$f(a_3)$};
+                \node[anchor=north] at (a3){$a_3$};
+
+                \path[name path=lineb3](b3)--+(0,-1);
+                \path[name intersections={of=line and lineb3}](intersection-1) coordinate(interb3);
+                \coordinate (yposb3) at (interb3 -| {(0,0)});
+                \draw[dashed] (b3) |- (yposb3);
+                \node[anchor=north east] at (yposb3){$f(b_3)$};
+                \node[anchor=south] at (b3){$b_3$};
+
+                \coordinate(x3) at (1.48125,0);
+                \node[anchor= north] at ([xshift=0.09cm]x3){$ x_3$};
+                \draw[-](x3)-- ++(0,0.03);
+                \draw[-](x3)-- ++(0,-0.03);
+
+			\end{tikzpicture}
+		\end{figure}
+
 
         De forma geral:
         \begin{gather*}
@@ -662,8 +784,7 @@
                 \end{cases}\\
         \end{gather*}
 
-        \textbf{Critério de Parada:}
-        \[|b_k - a_k| < E\]
+        \paragraph{Critério de Parada:} $|b_k - a_k| < E$
 
         \subsubsection*{Estimativa para o número de iterações}
         Na iteração $k$, temos que:
@@ -672,38 +793,55 @@
             &= \frac{b_0 - a_0}{2^k}
         \end{align*}
 
-        Queremos saber o valor de $k$ tal que $B_k - a_k < E$, ou seja:
+        Queremos saber o valor de $k$ tal que $b_k - a_k < E$, ou seja:
 
         \begin{gather*}
             \frac{b_0 - a_0}{2^k} < E\\
-            \rightarrow~2^k E > b_0 - a_0\\
-            \rightarrow~2^k > \frac{b_0 - a_0}{E}\\
-            \text{Aplicando log em ambos os lados}\\
+            2^k E > b_0 - a_0\\
+            2^k > \frac{b_0 - a_0}{E}\\
             k \times \log{2} > \log{(b_0 - a_0)} - \log{E}\\
             \boxed{k > \frac{\log{(b_0 - a_0)} - \log{E}}{\log{2}}}
         \end{gather*}
 
-        \paragraph{Exemplo:} $f(x) = x^3 + 3x - 1= 0$, com $[a,b] = [0,1]$ e $E = 10^{-1} = 0,1$
-        \begin{gather*}
-            f(a = a_1) = f(0) = -1 < 0~\text{e}~f(b = b_1) = f(1) = 3 > 0\\
-            f(a) \times f(b) = 0 \rightarrow \text{Ok!}\\
-            k = 1\\
-            x_1 = \frac{a_1 + b_1}{2} = \frac{0 + 1}{2} = 0,5\\
-            \rightarrow f(b_2 = 0,5) = 0,625 > 0\\
-            \xi \in [0,0.5] \rightarrow |b_2 - a_2| = 0,5 > E\\
-            k = 2\\
-            x_2 = \frac{a_2 + b_2}{2} = \frac{0 + 0,5}{2} = 0,25\\
-            \rightarrow f(a_3 = 0,25) = -0,23437 < 0\\
-            \xi \in [0.25,0.5] \rightarrow |b_3 - a_3| = 0,5 > E\\
-            k = 3\\
-            x_3 = \frac{a_3 + b_3}{2} = \frac{0,25 + 0,5}{2} = 0,375\\
-            \rightarrow f(b_4 = 0,375) = 0,1777 > 0\\
-            \xi \in [0.25,0.375] \rightarrow |b_2 - a_2| < 0,125 > E\\
-            k = 4\\
-            x_4 = \frac{a_4 + b_4}{2} = \frac{0,25 + 0,375}{2} = 0,3125\\
-            \rightarrow f(a_5 = 0,3125) = -0,0319824 < 0\\
-            \xi \in [0.3125,0.375] \rightarrow |b_5 - a_5| < 0,0625 < E~\textbf{(Pare!)}\\
-        \end{gather*}
+        \paragraph{Exemplo:} $f(x) : x^3 + 3x - 1= 0$, com $[a,b] = [0,1]$ e $E = 10^{-1}$
+
+        \begin{align*}
+            f(a = a_1) &= f(0)  &   f(b = b_1) &= f(1)\\
+            f(0) &= -1          &   f(1) &= 3\\
+            -1 &< 0             &   3 &> 0
+        \end{align*}
+
+        \[f(a) \times f(b) = 0 \rightarrow \text{Ok!}\]
+
+        \begin{align*}
+            k &= 1          &           x_1 &= \frac{a_1 + b_1}{2}      &       b_2 &= 0,5\\
+            &               &           &= 0,5                          &       f(b_2) &= 0,625\\
+            &               &           &                               &       0,625 &> 0\\
+            \\
+            &               &           \xi &\in [0,0.5]\\
+            &               &           |b_2 - a_2| &= 0,5 > E\\
+            \\
+            k &= 2          &           x_2 &= \frac{a_2 + b_2}{2}      &       a_3 &= 0,25\\
+            &               &           &= 0,25                         &       f(a_3) &= -0,23437\\
+            &               &           &                               &       -0,23437 &< 0\\
+            \\
+            &               &           \xi &\in [0.25,0.5]\\
+            &               &           |b_3 - a_3| &= 0,25 > E
+        \end{align*}
+        \begin{align*}
+            k &= 3          &           x_3 &= \frac{a_3 + b_3}{2}      &       a_4 &= 0,375\\
+            &               &           &= 0,375                        &       f(a_4) &= -0,1777\\
+            \\
+            &               &           \xi &\in [0.375,0.5]\\
+            &               &           |b_4 - a_4| &= 0,125 > E\\
+            \\
+            k &= 3          &           x_4 &= \frac{a_4 + b_4}{2}      &       a_5 &= 0,3125\\
+            &               &           &= 0,375                        &       f(a_5) &= -0,0319824\\
+            \\
+            &               &           \xi &\in [0.3125,0.5]\\
+            &               &           |b_5 - a_5| &= 0,0625 < E\\
+            &               &           &\text{\textbf{Pare!}}\\
+        \end{align*}
 
         Estimativa para o número de iterações:
         \begin{cases*}
@@ -712,8 +850,11 @@
         \end{cases*}, $E = 0,1$.
 
         \begin{gather*}
-            k > \frac{\log{(b_0 - a_0)} - \log{E}}{\log{2}}\\
-            k > \frac{\log{(1 - 0)} - \log{0.1}}{\log{2}}\\
+            k > \frac{\log{(b_0 - a_0)} - \log{(E)}}{\log{2}}\\
+            k > \frac{\log{(1 - 0)} - \log{(0,1)}}{\log{2}}\\
+            k > \frac{\log{(1)} - \log{(10^{-1})}}{\log{2}}\\
+            k > \frac{\log{(1)} + \log{(10)}}{\log{2}}\\
+            k > 1,5
         \end{gather*}
 
 \end{document}
