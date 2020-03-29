@@ -19,7 +19,7 @@
 
 %Page formatting
 %--------------------------------------
-\usepackage[a4paper, total={6in, 8in}, margin={1in,1in}, foot=0.5in]{geometry}
+\usepackage[a4paper, margin={1in,1in}, foot=0.5in]{geometry}
 \usepackage{multicol}
 \usepackage{indentfirst}
 \usepackage{enumitem}
@@ -42,6 +42,7 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{arrows}
 \usetikzlibrary{intersections}
+\pgfplotsset{compat=1.16}
 %--------------------------------------
 
 %Misc
@@ -56,6 +57,7 @@
 \usepackage{textcomp}
 \usepackage{mdwlist}
 \usepackage{subcaption}
+\usepackage{pgffor}
 %--------------------------------------
 
 
@@ -623,7 +625,7 @@
 
         \end{enumerate}
 
-        \subsubsection*{Fase 2: Refinamento}
+        \subsubsection{Fase 2: Refinamento}
         Métodos iterativos para se obter zeros de funções:
         \begin{itemize}
             \item ponto inicial;
@@ -636,7 +638,7 @@
             |x_{k-1} - x_k| < E
         \end{gather*}
 
-        \subsubsection*{Método da Bisseção}
+        \subsubsection{Método da Bisseção}
         Seja $f$ uma função contínua em $[a,b]$ e suponha $f(a) \times f(b) < 0$ (ou seja, existe raiz real). Para simplificar, vamos supor que existe uma única raíz real em $[a,b]$. O método da bisseção consistem em determinar uma sequência de intervalos $[a_i,b_i],~i = 1,~2,~\ldots$ de tal forma que $[a_i,b_i]$ sempre contenha a raíz.
 
         % Grafico que tem uma função que passa do negativo para o positivo no intervalo [a,b], sendo que x_1 = (a1+b1)/2. Iterativamente, vai diminuindo a e b pelo novo valor de x
@@ -839,7 +841,7 @@
             &               &           &= 0,375                        &       f(a_5) &= -0,0319824\\
             \\
             &               &           \xi &\in [0.3125,0.5]\\
-            &               &           |b_5 - a_5| &= 0,0625 < E\\
+            &               &           |b_5 - a_5| &= \boxed{0,0625 < E}\\
             &               &           &\text{\textbf{Pare!}}\\
         \end{align*}
 
@@ -857,4 +859,226 @@
             k > 1,5
         \end{gather*}
 
+        \subsubsection*{Sobre a convergência}
+        A convergência está garantida, visto que $a_i /leq x_i \leq b_i$, sendo $a_i$ crescente (não-decrescente) e $b_i$ decrescente (não-crescente).
+
+        Porém, ela é muito lenta: se o intervalo iniciar $a_0 - a_0 \ll E$ e $E$ for muito pequeno, o número de iterações tende a ser muito grande. Exemplo:
+
+        \begin{align*}
+            \left. \begin{array}{r}
+                |b_0 - a_0| = 3\\
+                E = 10^{-7}
+            \end{array} \right\} \to{} k &> \frac{\log{(3)}-\log{(10^{-7})}}{\log{(2)}}\\
+            k &\approxeq{} 24,8384\\
+            k &= 25~\text{iterações}
+        \end{align*}
+
+        \subsubsection{Método do Ponto Fixo}
+        Seja $f(x)$ uma função contínua em $[a,b]$ e existe pelo menos uma raiz $\xi$ neste intervalo. O método consiste em transformar esta equação em uma equação equivalente $x = \varphi(x)$ e, a partir de uma aproximação inicial $x_0$, gerar uma sequência de aproximações $\{x_k\}$ para $\xi$, usando a relação: $x_{k+1} = \varphi(x_k)$.
+
+        A função $\varphi(x)$ é tal que $f(\xi) = 0$ se e somente se $\varphi(\xi) = \xi$. Assim, encontrar um zero de $f(x)$ é equivalente a encontrar um ponto fixo para $\varphi(x)$.
+
+        Uma função que satisfaz essa condição é chamada de \underline{função de iteração} para a equação $f(x) = 0$.
+        
+        \paragraph{Exemplos:} $f(x) : x^2 + x - 6 = 0$. São funções de iteração:
+        \begin{enumerate}[label= \textbf{(\alph*)}]
+            \item $x = 6 - x^2  \to{} \varphi_1(x) = 6 - x^2$    
+            \item \begin{array}{r}x^2 = 6 - x\\
+                  x = \pm \sqrt{6 - x}\end{array} $\to{} \varphi_2(x) = \pm \sqrt{6 - x}$
+            \item \begin{array}{r} x(x+1)-6 = 0\\
+                  x = \frac{6}{x + 1}\end{array} $\to{} \varphi_3(x) = \frac{6}{x+1}$
+        \end{enumerate}
+
+        \paragraph{Obs:} Podem existir infinitas funções de iteração $\varphi(x)$ para uma $f(x) = 0$.\\
+
+        A forma geral das funções de iteração se dá por:
+        \[\varphi(x) = x + A(x).f(x)\]
+        com a condição de que, em $\xi$, ponto fixo de $\varphi(x)$, se tenha $A(\xi) \neq 0$.
+
+        \paragraph{Mostremos que} $f(\xi) = 0 \iff \varphi(\xi) = \xi$:
+        \begin{itemize}
+            \item[(\Rightarrow)] Seja $\xi$ tal que $f(\xi) = 0$.
+                \begin{align*}
+                    \varphi(\xi) &= \xi + A(\xi).f(\xi)\\
+                    \varphi(\xi) &= \xi + A(\xi).0\\
+                    \varphi(\xi) &= \xi
+                \end{align*}
+            \item[(\Leftarrow)] Seja $\varphi(\xi) = \xi$. Assim,
+                \begin{align*}
+                    \left.\begin{array}{l} \varphi(\xi) = \xi + A(\xi).f(\xi)\\ \varphi(\xi) = \xi\end{array}\right\}
+                    \Rightarrow{} A (\xi).f (\xi) = 0
+                \end{align*}
+                Como $A(\xi) \neq 0$, temos que $f(\xi) = 0$.\quad\square{}{}
+        \end{itemize}
+
+        \paragraph{Interpretação Geométrica:} Graficamente, uma raiz da equação $x = \varphi(x)$ é a abscissa do ponto de intersecção da reta $y = x$ e da curva $y = \varphi(x)$.
+
+        \begin{figure}[H]
+            \begin{subfigure}{0.5\textwidth}
+                \centering
+                \begin{tikzpicture}[>=latex']
+
+                    \draw[->, name path=yaxis](0,-0.25)--(0,4) node[anchor=south]{$y$};
+                    \draw[->, name path=xaxis](-0.25,0)--(4.5,0) node[anchor=west]{$x$};
+
+                    \draw[-, color=blue, name path=line](-0.25,-0.25)--(4,4) node[anchor=south west]{$y = x$};
+                    \draw[color=red, name path=phi] (-0.25, 0.5) parabola (4,2.5) node[anchor=south west] {$\varphi(x)$};
+
+                    \path[name intersections={of=line and phi,by=posxi}];
+                    \path[name path=xipos](posxi)--+(0,-1);
+                    \path[name intersections={of=xipos and xaxis,by=xi}];
+
+                    \draw[dashed](posxi)--(xi) node[anchor=north]{$\xi$};
+                    \draw[-](xi)-- ++(0,0.05);
+                    \draw[-](xi)-- ++(0,-0.05);
+
+                    \coordinate(x0) at (3.5,0);
+                    \node[anchor=north] at (x0){$x_0$};
+                    \draw[-](x0)-- ++(0,0.05);
+                    \draw[-](x0)-- ++(0,-0.05);
+
+                    \path[name path=linex0](x0)--+(0,4)
+                    \path[name intersections={of=linex0 and phi,by=posphix0}];
+                    \draw[dashed] (x0)--(posphix0);
+
+                    \path[name path=x0tox1](posphix0)--+(-4,0);
+                    \path[name intersections={of=x0tox1 and line,by=posyx1}];
+                    \draw[->] (posphix0)--(posyx1);
+
+                    \path[name intersections={of=x0tox1 and yaxis,by=y1}];
+                    \draw[dashed] (posyx1)--(y1);
+                    \node[anchor = east] at (y1) {\small{$\varphi(x_0) = y_1 = x_1$}}
+
+                    \path[name path=findx1](posyx1)--+(0,-2.5);
+                    \path[name intersections={of=findx1 and phi,by=posphix1}];
+                    \draw[->] (posyx1)--(posphix1);
+
+                    \path[name intersections={of=findx1 and xaxis,by=x1}];
+                    \draw[dashed] (x1)--(posphix1);
+
+                    \node[anchor=north] at (x1){$x_1$};
+                    \draw[-](x1)-- ++(0,0.05);
+                    \draw[-](x1)-- ++(0,-0.05);
+
+                    \path[name path=x1tox2](posphix1)--+(-3,0);
+                    \path[name intersections={of=x1tox2 and line,by=posyx2}];
+                    \draw[->] (posphix1)--(posyx2);
+
+                    \path[name intersections={of=x1tox2 and yaxis,by=y2}];
+                    \draw[dashed] (posyx2)--(y2);
+                    \node[anchor = east] at (y2) {\small{$\varphi(x_1) = y_2 = x_2$}}
+
+                    \path[name path=findx2](posyx2)--+(0,-2);
+                    \path[name intersections={of=findx2 and phi,by=posphix2}];
+                    \draw[->] (posyx2)--(posphix2);
+
+                    \path[name intersections={of=findx2 and xaxis,by=x2}];
+                    \draw[dashed] (x2)--(posphix2);
+                    \node[anchor=north] at (x2){$x_2$};
+                    \draw[-](x2)-- ++(0,0.05);
+                    \draw[-](x2)-- ++(0,-0.05);
+
+                    \path[name path=x2tox3](posphix2)--+(-2,0);
+                    \path[name intersections={of=x2tox3 and line,by=posyx3}];
+                    \draw[->] (posphix2)--(posyx3);
+
+                    \path[name intersections={of=x2tox3 and yaxis,by=y3}];
+                    \draw[dashed] (posyx3)--(y3);
+                    \node[anchor = east] at (y3) {\small{$\varphi(x_2) = y_3 = x_3$}}
+
+                \end{tikzpicture}
+                \caption*{\centering $\{x_k\} \to{} \xi$ quando $k \to{\infty}$}
+            \end{subfigure}
+            \begin{subfigure}{0.5\textwidth}
+                \centering
+                \begin{tikzpicture}[>=latex']
+
+                    \draw[->, name path=yaxis](0,-0.25)--(0,4) node[anchor=south]{$y$};
+                    \draw[->, name path=xaxis](-0.25,0)--(4.5,0) node[anchor=west]{$x$};
+
+                    \draw[-, color=blue, name path=line](-0.25,-0.25)--(4,4) node[anchor=south west]{$y = x$};
+                    \draw[color=red, name path=phi] (0.5, -0.25) parabola bend (3.5,4) (3.5,4) node[anchor=south east] {$\varphi(x)$};
+
+                    \path[name intersections={of=line and phi,by=posxi}];
+                    \path[name path=xipos](posxi)--+(0,-1);
+                    \path[name intersections={of=xipos and xaxis,by=xi}];
+
+                    \draw[dashed](posxi)--(xi) node[anchor=north]{$\xi$};
+                    \draw[-](xi)-- ++(0,0.05);
+                    \draw[-](xi)-- ++(0,-0.05);
+
+                    \coordinate(x0) at (1.5,0);
+                    \node[anchor=north] at (x0){$x_0$};
+                    \draw[-](x0)-- ++(0,0.05);
+                    \draw[-](x0)-- ++(0,-0.05);
+
+                    \path[name path=linex0](x0)--+(0,3)
+                    \path[name intersections={of=linex0 and phi,by=posphix0}];
+                    \draw[dashed] (x0)--(posphix0);
+
+                    \path[name path=x0tox1](posphix0)--+(4,0);
+                    \path[name intersections={of=x0tox1 and line,by=posyx1}];
+                    \draw[->] (posphix0)--(posyx1);
+
+                    \path[name path=findy1](posyx1)--+(-4,0);
+                    \path[name intersections={of=findy1 and yaxis,by=y1}];
+                    \draw[dashed] (posyx1)--(y1);
+                    \node[anchor = east] at (y1) {\small{$\varphi(x_0) = y_1 = x_1$}}
+
+                    \path[name path=findx1](posyx1)--+(0,-3);
+                    \path[name intersections={of=findx1 and xaxis,by=x1}];
+                    \draw[dashed] (posyx1)--(x1);
+
+                    \path[name path=findx1onphi](posyx1)--+(0,2);
+                    \path[name intersections={of=findx1onphi and phi,by=posphix1}];
+                    \draw[->] (posyx1)--(posphix1);
+
+                    \node[anchor=north] at (x1){$x_1$};
+                    \draw[-](x1)-- ++(0,0.05);
+                    \draw[-](x1)-- ++(0,-0.05);
+
+                    \path[name path=x1tox2](posphix1)--+(3,0);
+                    \path[name intersections={of=x1tox2 and line,by=posyx2}];
+                    \draw[->] (posphix1)--(posyx2);
+
+                    \path[name path=findy2](posyx2)--+(-4,0);
+                    \path[name intersections={of=findy2 and yaxis,by=y2}];
+                    \draw[dashed] (posyx2)--(y2);
+                    \node[anchor = east] at (y2) {\small{$\varphi(x_1) = y_2 = x_2$}}
+
+                    \path[name path=findx2onphi](posyx2)--+(0,2);
+                    \path[name intersections={of=findx2onphi and phi,by=posphix2}];
+                    \draw[->] (posyx2)--(posphix2);
+
+                    \path[name path=findx2](posyx2)--+(0,-4);
+                    \path[name intersections={of=findx2 and xaxis,by=x2}];
+                    \draw[dashed] (x2)--(posphix2);
+
+                    \node[anchor=north] at (x2){$x_2$};
+                    \draw[-](x2)-- ++(0,0.05);
+                    \draw[-](x2)-- ++(0,-0.05);
+
+                    \path[name path=x2tox3](posphix2)--+(2,0);
+                    \path[name intersections={of=x2tox3 and line,by=posyx3}];
+                    \draw[->] (posphix2)--(posyx3);
+
+                    \path[name path=findy3](posyx3)--+(-4,0);
+                    \path[name intersections={of=findy3 and yaxis,by=y3}];
+                    \draw[dashed] (posyx3)--(y3);
+                    \node[anchor = east] at (y3) {\small{$\varphi(x_2) = y_3 = x_3$}}
+                \end{tikzpicture}
+                \caption*{\centering Para certas $\varphi(x)$, o processo pode gerar uma sequência $\{x_k\}$ que diverge de $\xi$}
+            \end{subfigure}
+		\end{figure}
+
+        Exemplos:
+        \begin{enumerate}[label=\textbf{(\alph*)}]
+            \item $\xi = 2$, $\varphi_1(x) = 6 - x^2$, $x_0 = 1,5$
+                \begin{align*}
+                    x_1 = \varphi_2(x_0) &= 3,75\\
+                    x_2 = \varphi_2(x_1) &= -8,0625\\
+                    x_3 = \varphi_2(x_2) &= -59,003906
+                \end{align*}
+                $\{x_k\}$ não está convergindo para $\xi = 2$.
+        \end{enumerate}
 \end{document}
