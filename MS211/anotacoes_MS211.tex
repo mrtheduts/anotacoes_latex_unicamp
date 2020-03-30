@@ -1080,5 +1080,112 @@
                     x_3 = \varphi_2(x_2) &= -59,003906
                 \end{align*}
                 $\{x_k\}$ não está convergindo para $\xi = 2$.
+
+            \item $\xi = 2$, $\varphi_2(x) = \sqrt{6-x}$, $x_0 = 1,5$
+                \begin{align*}
+                    x_1 = \varphi_2(x_0) &= 2,12132\\
+                    x_2 = \varphi_2(x_1) &= 1,96944\\
+                    x_3 = \varphi_2(x_2) &= 2,00763\\
+                    x_4 = \varphi_2(x_3) &= 1,99809\\
+                    x_5 = \varphi_2(x_4) &= 2,0048\\
+                \end{align*}
+                $\{x_k\}$ está convergindo para $\xi = 2$.
         \end{enumerate}
+
+        \paragraph{Teorema:} Seja $\xi$ uma raiz de $f(x)=0$ isolada em um intervalo $I$ centrado em $\xi$. Seja $\varphi(x)$ uma função de iteração para $f(x)=0$.
+
+        Se:
+        \begin{enumerate}[label= (\roman*)]
+            \item $\varphi$ e $\varphi'(x)$ são contínua em $I$.
+            \item\label{teorema_59_item_2} $\varphi'(x)| \leq M \leq 1,~\forall x \in I$.
+            \item $x_0 \in I$.
+        \end{enumerate}
+        Então, a sequência $\{x_k\}$ gerada pelo processo iterativo $x_{k+1}=\varphi(x_k)$ converge para $\xi$.
+
+        \paragraph{Demonstração:}Ver Ruggiero, página 59.
+        \begin{description}
+            \item 1º Mostra que se $x_0 \in I \Rightarrow x_k \in I,~\forall k$
+            \item 2º Mostra que $\lim_{k \to \infty}{x_k} = \xi$
+        \end{description}
+
+        \underline{Exemplo:} $f(x) = x^2 + x - 6$, $\xi = 2$
+        \begin{enumerate}
+            \item $\varphi_1(x) = 6 - x^2$\\
+                    $\varphi_1'(x) = -2x$\\
+                    $\varphi_1(x)$ e $\varphi_1'(x)$ são contínuas em $\mathbb{R}$.
+                    \begin{align*}
+                        |\varphi_1'(x)| < 1 \iff |-2x| < 1 \iff -1 &< -2x < 1\\
+                        - \frac{1}{2} &< x < \frac{1}{2}\\
+                        \frac{1}{2} &> x > - \frac{1}{2}
+                    \end{align*}
+
+                    $\nexists$ intervalo $I$ centrado em $\xi = 2$ tal que $|\varphi_1'(x)| < 1,~\forall x \in I$.\\
+                    $\therefore \varphi_1(x)$ não satisfaz o item~\ref{teorema_59_item_2} do teorema. Então não há convergência.
+            \item $\varphi_2(x) = {(6-x)}^{\frac{1}{2}}$\\
+                    $\varphi_2'(x) = \frac{1}{2\sqrt{6 - x}}$\
+                    $\varphi_2(x)$ é contínua em $S = \{x \in \mathbb{R} / x \leq 6\}$\\
+                    $\varphi_2'(x)$ é contínua em $S' = \{x \in \mathbb{R} / x \< 6\}$\\
+                    \begin{align*}
+                        |\varphi_2'(x)| < 1 \iff |\frac{1}{2\sqrt{6-x}}| < 1 \iff \frac{1}{2\sqrt{6-x}} &< 1\\
+                        x &< 5,75
+                    \end{align*}
+
+                    $\therefore$ é impossível obter um intervalo $I$ centrado em $\xi = 2$ tais que as condição do teorema são satisfeitas.
+        \end{enumerate}
+
+        \paragraph{Critério de Parada para o MPF:}
+        \begin{itemize}
+            \item $|x_k - x_{k-1} = |\varphi(x_{k-1}) - x_{k-1}| < E$ (erro absoluto)
+            \item $|f(x_k)| < E$
+        \end{itemize}
+
+        \paragraph{\underline{Exercício:}} Determinar uma raiz de $x^2 - 2^x = 0$ pelo MPF, com erro absoluto inferior a $E = 0.6 \times 10^{-3}$, no intervalo $[-1, 0]$. $\xi = -0.76658$
+        \begin{align*}
+            x^2 - 2^x &= 0\\
+            x^2 &= 2^x\\
+            x & = \pm \sqrt{2^x}
+        \end{align*}
+        $\varphi(x) = -\sqrt{2^x}$: Função de iteração $-\sqrt{}$ pois sabe-se que a raíz é negativa (intervalo vai de $-1$ a $0$).
+
+        \begin{align*}
+            x_0 &= -0.5\\
+            x_1 &= \varphi(x_0) = -\sqrt{2^{-0.5}} = -0.84089            &       E &= |-0.84089 - (-0.5)| = 0.34089\\
+            x_2 &= \varphi(x_1) = -\sqrt{2^{-0.84089}} = -0.74719        &       E &= |-0.74719 - (-0.84089)| = 0.0937\\
+            x_3 &= \varphi(x_2) = -\sqrt{2^{-0.74719}} = -0.77185        &       E &= |-0.77185 - (-0.74719)| = 0.02466\\
+            x_4 &= \varphi(x_3) = -\sqrt{2^{-0.77185}} = -0.76528        &       E &= |-0.76528 - (-0.77185)| = 0.00657\\
+            x_5 &= \varphi(x_4) = -\sqrt{2^{-0.76528}} = -0.76703        &       E &= |-0.76703 - (-0.76528)| = 0.00175\\
+            x_6 &= \varphi(x_5) = -\sqrt{2^{-0.76703}} = -0.76656        &       E &= |-0.76656 - (-0.76703)| = 0.0004\\
+            &                                                            &       E &= \boxed{0.0004 < 0.0006} \text{\textbf{ (Pare!)}}\\
+        \end{align*}
+
+        Uma das raizes de $x^2 - 2^x = 0$ é $x = -0.76656$.
+
+        \begin{figure}[H]
+            \centering
+            \begin{tikzpicture}
+                \begin{axis}[
+                    axis lines = center,
+                    xlabel = $x$,
+                    ylabel = {$f(x)$},
+                    legend pos = north west,
+                    ]
+                    \addplot[
+                    domain=-2:1, 
+                    samples=100, 
+                    color=blue,
+                    ]
+                    {x};
+                    \addlegendentry{$y = x$};
+                    \addplot[
+                    domain=-2:1, 
+                    samples=100, 
+                    color=red,
+                    ]
+                    {-sqrt(2^x)};
+                    \addlegendentry{$\varphi(x) = -\sqrt{2^x}$};
+                \end{axis}
+            \end{tikzpicture}
+            \caption*{Visualização gráfica das funções $x=y$ e $\varphi(x) = -\sqrt{2^x}$}
+        \end{figure}
+
 \end{document}
