@@ -42,6 +42,7 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{arrows}
 \usetikzlibrary{intersections}
+\usetikzlibrary{angles,quotes}
 \pgfplotsset{compat=1.16}
 %--------------------------------------
 
@@ -60,6 +61,11 @@
 \usepackage{pgffor}
 %--------------------------------------
 
+%New Commands
+%--------------------------------------
+\newcommand*\circled[1]{\tikz[baseline= (char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+%--------------------------------------
 
 \frenchspacing
 %\raggedbottom{}
@@ -421,7 +427,7 @@
 
         \begin{enumerate}
             \item \textbf{Determinar uma aproximação inicial:} localizar ou isolar as raízes (ou seja, determinar umintervalo que contenha a raiz);
-            \item \textbf{Refinamento:} melhorar essa aproximação usando métodos iterativos (obter aproximações dentro de uma precisão $E$ fixada);
+            \item \textbf{Refinamento:} melhorar essa aproximação usando métodos iterativos (obter aproximações dentro de uma precisão $\varepsilon$ fixada);
         \end{enumerate}
 
         \subsubsection{Fase 1: Localizar raízes de $f(x)$}
@@ -634,8 +640,8 @@
         \end{itemize}
 
         \begin{gather*}
-            |-f(x)| < E\\
-            |x_{k-1} - x_k| < E
+            |-f(x)| < \varepsilon\\
+            |x_{k-1} - x_k| < \varepsilon
         \end{gather*}
 
         \subsubsection{Método da Bisseção}
@@ -786,7 +792,7 @@
                 \end{cases}\\
         \end{gather*}
 
-        \paragraph{Critério de Parada:} $|b_k - a_k| < E$
+        \paragraph{Critério de Parada:} $|b_k - a_k| < \varepsilon$
 
         \subsubsection*{Estimativa para o número de iterações}
         Na iteração $k$, temos que:
@@ -795,17 +801,17 @@
             &= \frac{b_0 - a_0}{2^k}
         \end{align*}
 
-        Queremos saber o valor de $k$ tal que $b_k - a_k < E$, ou seja:
+        Queremos saber o valor de $k$ tal que $b_k - a_k < \varepsilon$, ou seja:
 
         \begin{gather*}
-            \frac{b_0 - a_0}{2^k} < E\\
-            2^k E > b_0 - a_0\\
-            2^k > \frac{b_0 - a_0}{E}\\
-            k \times \log{2} > \log{(b_0 - a_0)} - \log{E}\\
-            \boxed{k > \frac{\log{(b_0 - a_0)} - \log{E}}{\log{2}}}
+            \frac{b_0 - a_0}{2^k} < \varepsilon\\
+            2^k \varepsilon > b_0 - a_0\\
+            2^k > \frac{b_0 - a_0}{\varepsilon}\\
+            k \times \log{2} > \log{(b_0 - a_0)} - \log{\varepsilon}\\
+            \boxed{k > \frac{\log{(b_0 - a_0)} - \log{\varepsilon}}{\log{2}}}
         \end{gather*}
 
-        \paragraph{Exemplo:} $f(x) : x^3 + 3x - 1= 0$, com $[a,b] = [0,1]$ e $E = 10^{-1}$
+        \paragraph{Exemplo:} $f(x) : x^3 + 3x - 1= 0$, com $[a,b] = [0,1]$ e $\varepsilon = 10^{-1}$
 
         \begin{align*}
             f(a = a_1) &= f(0)  &   f(b = b_1) &= f(1)\\
@@ -821,27 +827,27 @@
             &               &           &                               &       0,625 &> 0\\
             \\
             &               &           \xi &\in [0,0.5]\\
-            &               &           |b_2 - a_2| &= 0,5 > E\\
+            &               &           |b_2 - a_2| &= 0,5 > \varepsilon\\
             \\
             k &= 2          &           x_2 &= \frac{a_2 + b_2}{2}      &       a_3 &= 0,25\\
             &               &           &= 0,25                         &       f(a_3) &= -0,23437\\
             &               &           &                               &       -0,23437 &< 0\\
             \\
             &               &           \xi &\in [0.25,0.5]\\
-            &               &           |b_3 - a_3| &= 0,25 > E
+            &               &           |b_3 - a_3| &= 0,25 > \varepsilon
         \end{align*}
         \begin{align*}
             k &= 3          &           x_3 &= \frac{a_3 + b_3}{2}      &       a_4 &= 0,375\\
             &               &           &= 0,375                        &       f(a_4) &= -0,1777\\
             \\
             &               &           \xi &\in [0.375,0.5]\\
-            &               &           |b_4 - a_4| &= 0,125 > E\\
+            &               &           |b_4 - a_4| &= 0,125 > \varepsilon\\
             \\
             k &= 3          &           x_4 &= \frac{a_4 + b_4}{2}      &       a_5 &= 0,3125\\
             &               &           &= 0,375                        &       f(a_5) &= -0,0319824\\
             \\
             &               &           \xi &\in [0.3125,0.5]\\
-            &               &           |b_5 - a_5| &= \boxed{0,0625 < E}\\
+            &               &           |b_5 - a_5| &= \boxed{0,0625 < \varepsilon}\\
             &               &           &\text{\textbf{Pare!}}\\
         \end{align*}
 
@@ -849,10 +855,10 @@
         \begin{cases*}
             a_0 = 0\\
             b_0 = 1\\
-        \end{cases*}, $E = 0,1$.
+        \end{cases*}, $\varepsilon = 0,1$.
 
         \begin{gather*}
-            k > \frac{\log{(b_0 - a_0)} - \log{(E)}}{\log{2}}\\
+            k > \frac{\log{(b_0 - a_0)} - \log{(\varepsilon)}}{\log{2}}\\
             k > \frac{\log{(1 - 0)} - \log{(0,1)}}{\log{2}}\\
             k > \frac{\log{(1)} - \log{(10^{-1})}}{\log{2}}\\
             k > \frac{\log{(1)} + \log{(10)}}{\log{2}}\\
@@ -862,12 +868,12 @@
         \subsubsection*{Sobre a convergência}
         A convergência está garantida, visto que $a_i /leq x_i \leq b_i$, sendo $a_i$ crescente (não-decrescente) e $b_i$ decrescente (não-crescente).
 
-        Porém, ela é muito lenta: se o intervalo iniciar $a_0 - a_0 \ll E$ e $E$ for muito pequeno, o número de iterações tende a ser muito grande. Exemplo:
+        Porém, ela é muito lenta: se o intervalo iniciar $a_0 - a_0 \ll \varepsilon$ e $\varepsilon$ for muito pequeno, o número de iterações tende a ser muito grande. Exemplo:
 
         \begin{align*}
             \left. \begin{array}{r}
                 |b_0 - a_0| = 3\\
-                E = 10^{-7}
+                \varepsilon = 10^{-7}
             \end{array} \right\} \to{} k &> \frac{\log{(3)}-\log{(10^{-7})}}{\log{(2)}}\\
             k &\approxeq{} 24,8384\\
             k &= 25~\text{iterações}
@@ -1135,11 +1141,11 @@
 
         \paragraph{Critério de Parada para o MPF:}
         \begin{itemize}
-            \item $|x_k - x_{k-1} = |\varphi(x_{k-1}) - x_{k-1}| < E$ (erro absoluto)
-            \item $|f(x_k)| < E$
+            \item $|x_k - x_{k-1} = |\varphi(x_{k-1}) - x_{k-1}| < \varepsilon$ (erro absoluto)
+            \item $|f(x_k)| < \varepsilon$
         \end{itemize}
 
-        \paragraph{\underline{Exercício:}} Determinar uma raiz de $x^2 - 2^x = 0$ pelo MPF, com erro absoluto inferior a $E = 0.6 \times 10^{-3}$, no intervalo $[-1, 0]$. $\xi = -0.76658$
+        \paragraph{\underline{Exercício:}} Determinar uma raiz de $x^2 - 2^x = 0$ pelo MPF, com erro absoluto inferior a $\varepsilon = 0.6 \times 10^{-3}$, no intervalo $[-1, 0]$. $\xi = -0.76658$
         \begin{align*}
             x^2 - 2^x &= 0\\
             x^2 &= 2^x\\
@@ -1149,13 +1155,13 @@
 
         \begin{align*}
             x_0 &= -0.5\\
-            x_1 &= \varphi(x_0) = -\sqrt{2^{-0.5}} = -0.84089            &       E &= |-0.84089 - (-0.5)| = 0.34089\\
-            x_2 &= \varphi(x_1) = -\sqrt{2^{-0.84089}} = -0.74719        &       E &= |-0.74719 - (-0.84089)| = 0.0937\\
-            x_3 &= \varphi(x_2) = -\sqrt{2^{-0.74719}} = -0.77185        &       E &= |-0.77185 - (-0.74719)| = 0.02466\\
-            x_4 &= \varphi(x_3) = -\sqrt{2^{-0.77185}} = -0.76528        &       E &= |-0.76528 - (-0.77185)| = 0.00657\\
-            x_5 &= \varphi(x_4) = -\sqrt{2^{-0.76528}} = -0.76703        &       E &= |-0.76703 - (-0.76528)| = 0.00175\\
-            x_6 &= \varphi(x_5) = -\sqrt{2^{-0.76703}} = -0.76656        &       E &= |-0.76656 - (-0.76703)| = 0.0004\\
-            &                                                            &       E &= \boxed{0.0004 < 0.0006} \text{\textbf{ (Pare!)}}\\
+            x_1 &= \varphi(x_0) = -\sqrt{2^{-0.5}} = -0.84089            &       \varepsilon &= |-0.84089 - (-0.5)| = 0.34089\\
+            x_2 &= \varphi(x_1) = -\sqrt{2^{-0.84089}} = -0.74719        &       \varepsilon &= |-0.74719 - (-0.84089)| = 0.0937\\
+            x_3 &= \varphi(x_2) = -\sqrt{2^{-0.74719}} = -0.77185        &       \varepsilon &= |-0.77185 - (-0.74719)| = 0.02466\\
+            x_4 &= \varphi(x_3) = -\sqrt{2^{-0.77185}} = -0.76528        &       \varepsilon &= |-0.76528 - (-0.77185)| = 0.00657\\
+            x_5 &= \varphi(x_4) = -\sqrt{2^{-0.76528}} = -0.76703        &       \varepsilon &= |-0.76703 - (-0.76528)| = 0.00175\\
+            x_6 &= \varphi(x_5) = -\sqrt{2^{-0.76703}} = -0.76656        &       \varepsilon &= |-0.76656 - (-0.76703)| = 0.0004\\
+            &                                                            &       \varepsilon &= \boxed{0.0004 < 0.0006} \text{\textbf{ (Pare!)}}\\
         \end{align*}
 
         Uma das raizes de $x^2 - 2^x = 0$ é $x = -0.76656$.
@@ -1187,5 +1193,160 @@
             \end{tikzpicture}
             \caption*{Visualização gráfica das funções $x=y$ e $\varphi(x) = -\sqrt{2^x}$}
         \end{figure}
+
+        \subsubsection{Método de Newton}
+            \begin{figure}[H]
+                \centering
+                \begin{tikzpicture}[>=latex']
+
+                    \draw[->, name path=yaxis](0,-0.25)--(0,4) node[anchor=east]{$y = f(x)$};
+                    \draw[->, name path=xaxis](-0.25,0)--(4.5,0) node[anchor=north]{$x$};
+
+                    \draw[-, color=grey, name path=line](1,-0.25)--(4.3986,4) node[text width=2cm,anchor=north west]{tangente à curva $f$ no ponto $x_k$};
+                    \draw[color=red, name path=fx] (-0.25,-0.25) to[bend right] (3.5,4) node[anchor=south west] {$f(x)$};
+
+                    \path[name intersections={of=xaxis and fx,by=xi}];
+
+                    \node[anchor=north] at(xi) {$\xi$};
+                    \draw[-](xi)-- ++(0,0.05);
+                    \draw[-](xi)-- ++(0,-0.05);
+
+                    \path[name intersections={of=fx and line,by=xkpos}];
+                    \path[name path=findxk](xkpos)--+(0,-2);
+                    \path[name intersections={of=findxk and xaxis,by=xk}];
+
+                    \node[anchor=north] at (xk){$x_k$};
+                    \draw[-](xk)-- ++(0,0.05);
+                    \draw[-](xk)-- ++(0,-0.05);
+
+                    \path[name path=findfxk](xkpos)--+(-4,0)
+                    \path[name intersections={of=findfxk and yaxis,by=fxk}];
+                    \draw[dashed] (xkpos)--(fxk) node[anchor=east]{$f(x_k)$};
+                    \draw[dashed] (xkpos)--(xk);
+
+                    \path[name intersections={of=xaxis and line,by=nextxk}];
+                    \node[anchor=north west]at (nextxk){$x_{k+1}$}
+                    \draw[-](nextxk)-- ++(0,0.05);
+                    \draw[-](nextxk)-- ++(0,-0.05);
+
+                    \pic [draw] {angle = xk--nextxk--xkpos};
+                    \node[anchor=south west]at([yshift=-1mm,xshift=1mm]nextxk){\small{$\theta$}};
+
+                \end{tikzpicture}
+            \end{figure}
+
+            \begin{multicols}{2}
+                Sabemos que a derivada é a inclinação da reta tangente:
+                \[\tan{\theta} = f'(x)\]
+                \vfill
+                \begin{figure}[H]
+                    \centering
+                    \begin{tikzpicture}
+                        \coordinate (a) at (0,0);
+                        \coordinate (b) at (2,0);
+                        \coordinate (c) at (2,2);
+
+                        \draw (c)--(b)--(a)--cycle;
+                        \pic[draw] {angle= b--a--c};
+                        \node[anchor=south west]at([yshift=-1mm,xshift=1mm]a){\small{$\theta$}};
+
+                        \node[anchor=west] (fx) at ($(b)!0.5!(c)$) {$f(x_k)$};
+                        \node[anchor=north] (xminusx) at ($(a)!0.5!(b)$) {$x_{k} - x_{k+1}$};
+                    \end{tikzpicture}
+                \end{figure}
+            \end{multicols}
+
+            \begin{align*}
+                \shortintertext{Por outro lado, no triângulo, temos:}
+                \tan{\theta} = \frac{\text{cateto oposto}}{\text{cateto adjacente}} &= \frac{f(x_{k})}{x_{k} - x_{k+1}}\\
+                \shortintertext{Então, temos:}
+                \tan{\theta} = f'(x_k) &= \frac{f(x_k)}{x_k - x_{k+1}}\\
+                x_k - x_{k+1} &= \frac{f(x_k)}{f'(x_k)}\\
+                x_k &= x_{k+1} - \frac{f(x_k)}{f'(x_k)},~k=0,1,2, \ldots\\
+            \end{align*}
+
+            \paragraph{Dedução como um Método de Ponto Fixo:}
+            Visto que a função de iteração é dada por:
+            \[\varphi(x) = x + A(x).f(x)\]
+            com $A(\xi) \neq 0$ e com $\xi$ ponto fixo de $\phi(x)$.
+
+            A função de iteração ideal satisfaz a condição $\varphi'(\xi) = 0$. Assim,
+            \begin{align*}
+                \varphi(x) &= x + A(x).f(x)\\
+                \shortintertext{Aplicando a regra do produto na derivada:}
+                \varphi'(x) &= 1 + A'(x).f(x) + A(x).f'(x)\\
+            \end{align*}
+
+            Vimos que MPF tem convergência garantida para
+            \[|\varphi(x)| < 1,~\forall x \in I \text{ centrado na raiz}\]
+
+            Aconvergência é mais rápida quanto menor for $|\varphi'(\xi)|$. Assim, se escolhermos $A(x)$ tal que $\varphi'(\xi) = 0$, teremos garantia de convergência.
+
+            Assim:
+            \begin{gather*}
+                \varphi'(\xi) = 0\\
+                1 + A'(\xi).f(\xi) + A(\xi).f'(\xi) = 0\\
+                1 + A(\xi).f'(\xi) = 0\\
+                A(\xi) = \frac{-1}{f'(\xi)}
+            \end{gather*}
+            
+            Então, a função $A$ é dada por: $A(x) = \frac{-1}{f'(x)}$ e a função da iteração correspondente é:
+            \[\varphi(x) = x - \frac{1}{f'(x)}.f(x) = \boxed{x - \frac{f(x)}{f'(x)}}\]
+            e a sequência de aproximações $x_k$ é gerada por:
+            \[\boxed{x_{k+1} = \varphi(x_k) \iff x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)}}\]
+
+            \paragraph{Por série de Taylor:}
+            Série de taylor de $f(x)$ em torno do ponto $x =a$
+            \begin{align*}
+                f(x) &\simeq f(a) + \frac{f'(a)}{1!}(x-a) + \frac''{f(a)}{2!}{(x-a)}^2 + \cdots\\
+                &= \sum_{n = 0}^{\infty} \frac{f^{(n)}(a)}{n!}.{(x - a)}^n
+            \end{align*}
+            para $a = 0$ temos séried e MacLaurin.
+
+            A partir de um ponto inicial $x_0$, a cada iteração $k$, construímos a aproximação de $f$ por série de Taylor, em torno de $x_k$:
+            \[f(\underline{x}) \sim r(\underline{x}) = f(x_k) + f'(x_k).(\underline{x} - x_k)\]
+
+            O próximo novo ponto é obtido tal que
+            \begin{align*}
+                r(x_{k+1}) = 0 &\iff f(x_k) + f'(x_k).(x_{k+1}-x_k) = 0\\
+                               &\iff f'(x_k)(x_{k+1} - x_k) = -f(x_k)\\
+                               &\iff (x_{k+1} - x_k) = -\frac{f(x_k)}{f'(x_k)}\\
+                               &\iff \boxed{x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)}}\\
+            \end{align*}
+           
+            \subsubsection*{Algoritmo do Método de Newton} %convergência quadrática
+
+            \paragraph{Teorema:} Sejam $f$, $f'$ e $f''$ contínuas em um intervalo $I$ que contém a raiz $\xi$ de $f$. Supor $f'(\xi) \neq 0$.
+
+            Então existe um intervalo $I_2 \subset I$, contendo a raiz $\xi$, tal que: Para $x_0 \in I_2$, a sequência $x_k$ gerada pelo método de Newton $(x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)})$ converge para a raiz.
+
+            \paragraph{Taxa de convergência quadrática:} Para $k \to \infty$, a sequência gerada pelo Método de Newton converge para a raiz $\xi$, então:
+            \[|x_{k+1} - \xi| < C \times {|x_k - \xi|}^{\underline{2}~\to \text{\textit{ (convergência quadrática)}}}\]
+            em que $C$ é uma constante real positiva. Essa propriedade é assintótica e, no limite, os dígitos corretos dasa aproximações praticamente dobram de uma iteração para a outra.
+
+            \paragraph{Exemplo:} Use o Método de Newton para calcular o valor de $\sqrt{2}$ com erro $\varepsilon = 10^{-6}$, partindo de $x_0 = 1.4$
+            \[x = \sqrt{2} \iff x^2 - 2 = 0 \iff f(x) = x^2 - 2 = 0\]
+            \hfill $\sqrt{2} \cong 1.414213562373$
+
+            \begin{gather*}
+                f(x) = x^2 - 2\\
+                f'(x) = 2x\\
+            \end{gather*}
+            
+            Método de Newton: 
+            \[x_{k+1} = x_k - \frac{-f(x_k)}{f'(x_k)} = x_k - \frac{({x_k}^2 - 2)}{2x_k} = \frac{{x_k}^2 + 2}{2x_k}\]
+
+            \begin{align*}
+                x_0 &= 1.4\\
+                x_1 &= \frac{{x_0}^2 + 2}{2x_0} = \frac{{1.4}^2 + 2}{2 \times 1.4} = 1.41428571429      &       \varepsilon_1 &= |x_1 - x_0| = 0.01928571429\\
+                x_2 &= \frac{{1.41428571429}^2 + 2}{2 \times 1.41428571429} = 1.41421356421             &       \varepsilon_2 &= |x_2 - x_1| = 0.00007215\\
+                x_3 &= \frac{{1.41421356421}^2 + 2}{2 \times 1.41421356421} = 1.41421356237             &       \varepsilon_3 &= |x_3 - x_2| = 2.7 \times 10^{-9} < \varepsilon\\
+            \end{align*}
+
+            \paragraph{\underline{Exercícios:}} Determine o ponto inicial pelo método gráfico e considere $\varepsilon = 0.001$. (Atenção! Calculadora em radianos)
+            \begin{enumerate}[label=\textbf{ (\alph*)}]
+                \item $f(x) = x - e^{-x} = 0$
+                \item $f(x) = \cos{(x)} - x = 0$
+            \end{enumerate}
 
 \end{document}
